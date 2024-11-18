@@ -67,6 +67,20 @@ for valor in municipios_valores:
     botao_pesquisar = navegador.find_element(By.ID, "form:pesquisar")
     botao_pesquisar.click()
     sleep(10)
+
+    try:
+        # Localiza o segundo <td> dentro da estrutura <td> -> <table> -> <tbody> -> <tr> -> <td>
+        valor_elemento = navegador.find_element(By.XPATH, 
+            '//td[@class="tdParNum"]/table/tbody/tr/td[2]/span')
+        
+        # Extrai o texto visível do elemento
+        valor_texto = valor_elemento.text.strip()
+        print(f"Valor extraído: {valor_texto}")
+
+    except Exception as e:
+        print(f"Erro ao extrair o valor: {e}")
+
+    
     
     
 navegador.quit()
