@@ -59,14 +59,14 @@ for valor in municipios_valores:
     municipio_dropdown = WebDriverWait(navegador, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "#form\\:municipio")))
     municipio = Select(municipio_dropdown)
-
     municipio.select_by_value(valor)
     sleep(1)
+    texto_visivel = municipio.first_selected_option.text
 
     # Clica no botão de pesquisa
     botao_pesquisar = navegador.find_element(By.ID, "form:pesquisar")
     botao_pesquisar.click()
-    sleep(10)
+    sleep(20)
 
     try:
         # Localiza o segundo <td> dentro da estrutura <td> -> <table> -> <tbody> -> <tr> -> <td>
@@ -75,7 +75,7 @@ for valor in municipios_valores:
         
         # Extrai o texto visível do elemento
         valor_texto = valor_elemento.text.strip()
-        print(f"Valor extraído: {valor_texto}")
+        print(f"Valor extraído de {texto_visivel} é {valor_texto}")
 
     except Exception as e:
         print(f"Erro ao extrair o valor: {e}")
