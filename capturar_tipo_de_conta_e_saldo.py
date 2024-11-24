@@ -10,6 +10,24 @@ import openpyxl
 import os
 
 primeira_execucao = False
+
+nome_da_planilha = str(input('Digite o nome da planilha (sem extensão): ')) 
+ano_elemento_selecionado = str(input('Digite o ano com 4 digitos'))
+mes_elemento_selecionado = str(input('''DIGITE O NÚMERO DO MÊS COM 2 DÍGITOS:
+[01] JANEIRO
+[02] FEVEREIRO
+[03] MARÇO
+[04] ABRIL
+[05] MAIO
+[06] JUNHO
+[07] JULHO
+[08] AGOSTO
+[09] SETEMBRO
+[10] OUTUBRO
+[11] NOVEMBRO
+[12] DEZEMBRO
+'''))
+
 opcao_execucao = str(input('''SELECIONE A OPÇÃO
 [1] PRIMEIRA EXECUÇÃO
 [2] CORRIGIR ERROS            '''))
@@ -20,23 +38,59 @@ elif opcao_execucao == '2':
 else:
     print('Opção inválida, execute o programa novamente...')
 
-
-
 # Configuração do WebDriver
 service = Service(ChromeDriverManager().install())
 navegador = webdriver.Chrome(service=service)
 
 # Configura o caminho para salvar o arquivo na área de trabalho do usuário
-caminho_area_de_trabalho = os.path.join(os.path.expanduser("~"), "Desktop", "Dados_Municipios.xlsx")
+caminho_area_de_trabalho = os.path.join(os.path.expanduser("~"), "Desktop", f"{nome_da_planilha}.xlsx")
 
 # Acessa a página
 url = ('https://aplicacoes.mds.gov.br/suaswebcons/restrito/execute.jsf?b=*tbmepQbsdfmbtQbhbtNC&event=*fyjcjs')
 navegador.get(url)
 
+# Torna os campos que ativam o dropdown de município selecionáveis
+def selecionar_elementos(navegador):
+    ano = Select(WebDriverWait(navegador, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="form:ano"]'))
+    ))
+    mes = Select(WebDriverWait(navegador, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="form:mes"]'))
+    ))
+    esf_adm = Select(WebDriverWait(navegador, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="form:esferaAdministrativa"]'))
+    ))
+    uf = Select(WebDriverWait(navegador, 10).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="form:uf"]'))
+    ))
 
+    return ano, mes, esf_adm, uf
 
-# municipio.select_by_visible_text('ABADIANIA')
-# sleep(1)
+# Preenche o valor no campos
+def selecionar_valores_elementos():
+    mes.select_by_value(mes_elemento_selecionado)
+    sleep(1)
+    uf.select_by_visible_text('GO')
+    sleep(1)
+    ano.select_by_visible_text(ano_elemento_selecionado)
+    sleep(1)
+    esf_adm.select_by_visible_text('MUNICIPAL')
+    sleep(1)
+
+def click_pesquisar():
+    try:
+        # Clica no botão pesquisar
+        botao_pesquisar = navegador.find_element(By.ID, "form:pesquisar")
+        botao_pesquisar.click()
+
+        # Aguarda até que o elemento "valor_elemento" esteja disponível (ou o tempo limite expire)
+        WebDriverWait(navegador, 20).until(
+            EC.presence_of_element_located((By.XPATH, '//td[@class="tdParNum"]/table/tbody/tr/td[2]/span'))
+        )
+        print("Página carregada e elemento encontrado.")
+    except TimeoutException:
+        print("O tempo de espera terminou. O elemento não foi encontrado.")
+
 while primeira_execucao is True:
     
     workbook = openpyxl.Workbook()
@@ -49,44 +103,23 @@ while primeira_execucao is True:
 
     linha_excel = 2
 
-    
-
-    # Preenche os campos que ativam o dropdown de município
-
-    ano = Select(navegador.find_element(By.XPATH, '//*[@id="form:ano"]'))
-    mes = Select(navegador.find_element(By.XPATH, '//*[@id="form:mes"]'))
-    esf_adm = Select(navegador.find_element(By.XPATH, '//*[@id="form:esferaAdministrativa"]'))
-    uf = Select(navegador.find_element(By.XPATH, '//*[@id="form:uf"]'))
-
-
-    # Define os valores necessários para ativar o campo de município
-    def selecionar_valores_elementos():
-        mes.select_by_value('10')
-        sleep(1)
-        uf.select_by_visible_text('GO')
-        sleep(1)
-        ano.select_by_visible_text('2024')
-        sleep(1)
-        esf_adm.select_by_visible_text('MUNICIPAL')
-        sleep(1)
+    ano, mes, esf_adm, uf = selecionar_elementos(navegador)
 
     selecionar_valores_elementos()
-
+    
     # Aguarda o campo 'municipio' ser ativado (não estar mais 'disabled')
     municipio_dropdown = WebDriverWait(navegador, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "#form\\:municipio"))
-    )
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "#form\\:municipio"))
+        )
     municipio = Select(municipio_dropdown)
 
     municipios_valores = [option.get_attribute("value") for option in municipio.options if option.get_attribute("value")]
 
     for valor in municipios_valores:
-        sleep(5)
         try:
-            ano = Select(navegador.find_element(By.XPATH, '//*[@id="form:ano"]'))
-            mes = Select(navegador.find_element(By.XPATH, '//*[@id="form:mes"]'))
-            esf_adm = Select(navegador.find_element(By.XPATH, '//*[@id="form:esferaAdministrativa"]'))
-            uf = Select(navegador.find_element(By.XPATH, '//*[@id="form:uf"]'))
+            navegador.refresh()
+            ano, mes, esf_adm, uf = selecionar_elementos(navegador)
+            
             selecionar_valores_elementos()
 
             # Aguarda o campo 'municipio' ser ativado novamente
@@ -94,13 +127,9 @@ while primeira_execucao is True:
                 EC.element_to_be_clickable((By.CSS_SELECTOR, "#form\\:municipio")))
             municipio = Select(municipio_dropdown)
             municipio.select_by_value(valor)
-            sleep(2)
             selecao_nome_municipio = municipio.first_selected_option.text
 
-            # Clica no botão de pesquisa
-            botao_pesquisar = navegador.find_element(By.ID, "form:pesquisar")
-            botao_pesquisar.click()
-            sleep(20)
+            click_pesquisar()
 
             try:
                 # Localiza o segundo <td> dentro da estrutura <td> -> <table> -> <tbody> -> <tr> -> <td>
@@ -154,24 +183,11 @@ for row in sheet.iter_rows(min_row=2, max_col=2, values_only=False):  # Apenas a
 
         try:
             navegador.get(url)
-            sleep(10)
+            sleep(3)
             
-            ano = Select(navegador.find_element(By.XPATH, '//*[@id="form:ano"]'))
-            mes = Select(navegador.find_element(By.XPATH, '//*[@id="form:mes"]'))
-            esf_adm = Select(navegador.find_element(By.XPATH, '//*[@id="form:esferaAdministrativa"]'))
-            uf = Select(navegador.find_element(By.XPATH, '//*[@id="form:uf"]'))
+            ano, mes, esf_adm, uf = selecionar_elementos(navegador)
             
-
-            def selecionar_valores_elementos():
-                mes.select_by_value('10')
-                sleep(1)
-                uf.select_by_visible_text('GO')
-                sleep(1)
-                ano.select_by_visible_text('2024')
-                sleep(1)
-                esf_adm.select_by_visible_text('MUNICIPAL')
-                sleep(1)
-
+            # Define os valores necessários para ativar o campo de município
             selecionar_valores_elementos()
 
             # Aguarda o campo 'municipio' ser ativado novamente
@@ -180,10 +196,7 @@ for row in sheet.iter_rows(min_row=2, max_col=2, values_only=False):  # Apenas a
             municipio = Select(municipio_dropdown)
             municipio.select_by_visible_text(nome_municipio)
 
-            # Clica no botão de pesquisa
-            botao_pesquisar = navegador.find_element(By.ID, "form:pesquisar")
-            botao_pesquisar.click()
-            sleep(20)
+            click_pesquisar()
 
             try:
                 # Localiza o segundo <td> dentro da estrutura <td> -> <table> -> <tbody> -> <tr> -> <td>
@@ -196,31 +209,12 @@ for row in sheet.iter_rows(min_row=2, max_col=2, values_only=False):  # Apenas a
                 print(f"corrigido: {nome_municipio} com o valor: {valor_saldo}")
                 workbook.save(caminho_area_de_trabalho)
                 
-                
-
-
-
             except Exception as e:
                 print(f'Deu erro na captura do valor da linha: {nome_municipio}')
                 navegador.refresh()
 
         except Exception as t:
-            print(f'Deu erro na seleção dos campos na linha: {nome_municipio}')
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# navegador.quit()
+            print(f'Deu erro na seleção dos campos na linha: {nome_municipio}|info do erro: {t}')
+            
+print('ENCERRANDO O PROGRAMA...')
+navegador.quit()
