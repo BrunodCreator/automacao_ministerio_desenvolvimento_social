@@ -1,23 +1,39 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+from time import sleep
+
+# Configuração do WebDriver
+service = Service(ChromeDriverManager().install())
+navegador = webdriver.Chrome(service=service)
+
+
 # Torna os campos que ativam o dropdown de município selecionáveis
 def selecionar_elementos(navegador):
-    ano = Select(WebDriverWait(navegador, 20).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="form:ano"]'))
-    ))
     mes = Select(WebDriverWait(navegador, 20).until(
         EC.presence_of_element_located((By.XPATH, '//*[@id="form:mes"]'))
-    ))
-    esf_adm = Select(WebDriverWait(navegador, 20).until(
-        EC.presence_of_element_located((By.XPATH, '//*[@id="form:esferaAdministrativa"]'))
     ))
     uf = Select(WebDriverWait(navegador, 20).until(
         EC.presence_of_element_located((By.XPATH, '//*[@id="form:uf"]'))
     ))
+    ano = Select(WebDriverWait(navegador, 20).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="form:ano"]'))
+    ))
+    
+    esf_adm = Select(WebDriverWait(navegador, 20).until(
+        EC.presence_of_element_located((By.XPATH, '//*[@id="form:esferaAdministrativa"]'))
+    ))
+    
 
-    return ano, mes, esf_adm, uf
+    return mes, uf, ano, esf_adm
 
 
 # Preenche o valor no campos
-def selecionar_valores_elementos():
+def selecionar_valores_elementos(mes, uf, ano, esf_adm, mes_elemento_selecionado, ano_elemento_selecionado):
     mes.select_by_value(mes_elemento_selecionado)
     sleep(1)
     uf.select_by_visible_text('GO')
