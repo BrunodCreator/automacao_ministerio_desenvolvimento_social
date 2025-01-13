@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import QApplication, QLineEdit, QWidget, QPushButton, QVBoxLayout, QFrame, QLabel, QHBoxLayout, QComboBox, QSizePolicy
+from PyQt5.QtWidgets import QApplication, QLineEdit, QWidget, QPushButton, QVBoxLayout, QFrame, QLabel, QHBoxLayout, QComboBox, QSizePolicy, QRadioButton
+from time import sleep
 
 
 def menu_de_selecao():
+    from func.func_main import teste
     app = QApplication([])  # Inicia o aplicativo
     window = QWidget()  # Cria uma janela básica
     layout = QVBoxLayout()  # Layout principal
@@ -36,7 +38,18 @@ def menu_de_selecao():
 
     form_ano = QComboBox()
     form_ano.addItems([str(ano) for ano in range(2011, 2026)])
+    
+    #botão de confirmação
+    radio_primeira_execucao = QRadioButton('Primeira execução')
+    radio_corrigir_erros = QRadioButton('Corrigir erros')
 
+    def capturar_check():
+        if radio_primeira_execucao.isChecked():
+            return True
+        else:
+            return False
+        
+    
     # Adiciona os botões Confirmar e Sair ao layout horizontal
     confirm_bt = QPushButton('Confirmar')
     exit_bt = QPushButton('Sair')
@@ -51,6 +64,8 @@ def menu_de_selecao():
     layout.addLayout(layout_escrever_form)  # Campo de texto e botão Confirmar
     layout.addWidget(form_mes)  # Formulário para mês
     layout.addWidget(form_ano)  # Formulário para ano
+    layout.addWidget(radio_primeira_execucao)
+    layout.addWidget(radio_corrigir_erros)
     layout.addStretch()  # Adiciona espaço expansível entre os formulários e o frame inferior
     layout.addWidget(botton_frame)  # Adiciona o frame inferior ao final do layout principal
 
@@ -60,10 +75,12 @@ def menu_de_selecao():
         valores['nome_da_planilha'] = text_nome_plan.text()
         valores['mes'] = form_mes.currentText()
         valores['ano'] = form_ano.currentText()
-        app.quit() #fecha a janela
+        valores['primeira_execucao'] = capturar_check()
+        app.quit()
+        
     
+
     confirm_bt.clicked.connect(capturar_valores)
-    confirm_bt.clicked.connect(lambda: teste( nome_da_planilha, ano_elemento_selecionado, mes_elemento_selecionado))
         
     # Configurações da janela
     window.setWindowTitle("Ministério do Desenvolvimento Social")
@@ -75,9 +92,34 @@ def menu_de_selecao():
     
     return valores
 
-
-
-
+def converter_mes(mes):
+    match mes:
+        case 'Janeiro':
+            return '01'
+        case 'Fevereiro':
+            return '02'
+        case 'Março':
+            return '03'
+        case 'Abril':
+            return '04'
+        case 'Maio':
+            return '05'
+        case 'Junho':
+            return '06'
+        case 'Julho':
+            return '07'
+        case 'Agosto':
+            return '08'
+        case 'Setembro':
+            return '09'
+        case 'Outubro':
+            return '10'
+        case 'Novembro':
+            return '11'
+        case 'Dezembro':
+            return '12'
+        case _:
+            return None  # Caso o mês não seja válido
 
 
     
