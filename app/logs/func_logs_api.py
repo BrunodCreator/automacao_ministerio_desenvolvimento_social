@@ -7,16 +7,13 @@ def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
                       numeroPoint=0, dataHoraInicioPoint=None, dataHoraFimPoint=None,
                       statusPoint="Sucesso", statusExecucao="SUCESSO", msgErro="", execucao=""): 
     try:
-        #URL da API
         url = ''
 
-        # Cabeçalhos
         headers = {
         "Content-Type": "application/json",
         "Authorization": ""
         }
         
-        #registrar os horários de primeira execução e point
         if not dataHoraInicioRobo:
             dataHoraInicioRobo = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         if not dataHoraInicioPoint:
@@ -24,7 +21,6 @@ def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
         if not dataHoraFimPoint:
             dataHoraFimPoint = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
-        #Corpo da requisição
         payload = {
             "cliente": f"{cliente}",
             "nomeProcesso": f"{nomeProcesso}",
@@ -40,60 +36,140 @@ def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
             "msgErro": f"{msgErro}",
             "execucao": f"{execucao}"
         }
-        #Enviando a requisição POST
         response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()  # Levanta exceções para códigos de erro HTTP
+        response.raise_for_status()  
         
-        #Captura o valor f"{execucao}" para as chamadas posteriores
         execucao = response.json()
         print(execucao)
         
-        return nomeProcesso, categoria, numeroPoint, statusPoint,statusExecucao, msgErro, execucao
+        return execucao
     
     except requests.exceptions.RequestException as e:
-        # Trata exceções relacionadas à requisição HTTP
         print(f"Erro na requisição: {e}")
         
-        return nomeProcesso, categoria, numeroPoint, statusPoint, statusExecucao, msgErro, None
+        return dataHoraInicioRobo, None
         
-# def exec_inicio_point(cliente, nomeProcesso, nomeRobo, dataHoraInicioRobo, 
-#                       numeroPoint, categoria='INFO', statusExecucao='Sucesso',
-#                       msgErro='', statusPoint='Sucesso', execucao):
-    
-#     #URL da API
-#     url = ''
+def exec_inicio_point(cliente,nomeProcesso='',
+    nomeRobo='', dataHoraInicioRobo='', categoria='',
+    numeroPoint='', dataHoraInicioPoint='',
+    statusPoint='', statusExecucao='', msgErro='', execucao=''):
+    try:
+        url = ''
 
-#     # Cabeçalhos
-#     headers = {
-#         "Authorization": "",
-#         "Content-Type": "application/json"
-#     }
-    
-#     dataHoraInicioPoint = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-#     numeroPoint += 1
-    
-#     #Corpo da requisição
-#     payload = {
-#         "cliente": f"{cliente}",
-#         "nomeProcesso": f"{nomeProcesso}",
-#         "nomeRobo": f"{nomeRobo}",
-#         "dataHoraInicioRobo": f"{dataHoraInicioRobo}",
-#         "daraHoraFimRobo": "",
-#         "categoria": f"{categoria}",
-#         "numeroPoint": f"{numeroPoint}",
-#         "dataHoraInicioPoint": f"{dataHoraInicioPoint}",
-#         "dataHoraFimPoint": "",
-#         "statusPoint": f"{statusPoint}",
-#         "statusExecucao": f"{statusExecucao}",
-#         "msgErro": f"{msgErro}",
-#         "execucao": f"{execucao}"
-#     }
+        headers = {
+            "Authorization": "",
+            "Content-Type": "application/json"
+        }
+        
+        dataHoraInicioPoint = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        payload = {
+            "cliente": f"{cliente}",
+            "nomeProcesso": f"{nomeProcesso}",
+            "nomeRobo": f"{nomeRobo}",
+            "dataHoraInicioRobo": f"{dataHoraInicioRobo}",
+            "dataHoraFimRobo": "",
+            "categoria": f"{categoria}",
+            "numeroPoint": f"{numeroPoint}",
+            "dataHoraInicioPoint": f"{dataHoraInicioPoint}",
+            "dataHoraFimPoint": "",
+            "statusPoint": f"{statusPoint}",
+            "statusExecucao": f"{statusExecucao}",
+            "msgErro": f"{msgErro}",
+            "execucao": f"{execucao}"
+        }
 
-#     #Enviando a requisição POST
-#     response = requests.post(url, headers=headers, json=payload)
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()
 
-#     if response.status_code == 200:
-#         print(f'Resposta da API: {response.json()}')
-#     else:
-#         print(f'ERRO: {response.status_code}')
-#         print(f'Detalhes', response.text)
+        return  execucao
+
+    except requests.exceptions.RequestException as e:
+        print(f"Erro na requisição: {e}")
+        return  execucao
+    
+
+def exec_fim_point(cliente, nomeProcesso,
+    nomeRobo, dataHoraInicioRobo, categoria,
+    numeroPoint, dataHoraInicioPoint, dataHoraFimPoint,
+    statusPoint, statusExecucao, msgErro, execucao): 
+    try:
+        url = ''
+
+        headers = {
+        "Content-Type": "application/json",
+        "Authorization": ""
+        }
+
+        if not dataHoraFimPoint:
+            dataHoraFimPoint = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        payload = {
+        "cliente": f"{cliente}",
+        "nomeProcesso": f"{nomeProcesso}",
+        "nomeRobo": f"{nomeRobo}",
+        "dataHoraInicioRobo": f"{dataHoraInicioRobo}",
+        "daraHoraFimRobo": "",
+        "categoria": f"{categoria}",
+        "numeroPoint": f"{numeroPoint}",
+        "dataHoraInicioPoint": f"{dataHoraInicioPoint}",
+        "dataHoraFimPoint": f"{dataHoraFimPoint}",
+        "statusPoint": f"{statusPoint}",
+        "statusExecucao": f"{statusExecucao}",
+        "msgErro": f"{msgErro}",
+        "execucao": f"{execucao}"
+        }
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()  
+
+        execucao = response.json()
+        print(execucao)
+
+        return dataHoraFimPoint
+
+    except requests.exceptions.RequestException as e:
+        print(f"Erro na requisição: {e}")
+
+        return nomeProcesso, categoria, numeroPoint,dataHoraFimPoint, statusPoint, statusExecucao, msgErro,
+    
+def exec_fim_robo(cliente, nomeProcesso,
+    nomeRobo, dataHoraInicioRobo, categoria,
+    numeroPoint, dataHoraInicioPoint, dataHoraFimPoint,dataHoraFimRobo,
+    statusPoint, statusExecucao, msgErro, execucao): 
+    try:
+        url = ''
+
+        headers = {
+        "Content-Type": "application/json",
+        "Authorization": ""
+        }
+        if not dataHoraFimRobo:
+            dataHoraFimRobo = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        payload = {
+        "cliente": f"{cliente}",
+        "nomeProcesso": f"{nomeProcesso}",
+        "nomeRobo": f"{nomeRobo}",
+        "dataHoraInicioRobo": f"{dataHoraInicioRobo}",
+        "daraHoraFimRobo": "",
+        "categoria": f"{categoria}",
+        "numeroPoint": f"{numeroPoint}",
+        "dataHoraInicioPoint": f"{dataHoraInicioPoint}",
+        "dataHoraFimPoint": f"{dataHoraFimPoint}",
+        "statusPoint": f"{statusPoint}",
+        "statusExecucao": f"{statusExecucao}",
+        "msgErro": f"{msgErro}",
+        "execucao": f"{execucao}"
+        }
+        response = requests.post(url, headers=headers, json=payload)
+        response.raise_for_status()  # Levanta exceções para códigos de erro HTTP
+
+        execucao = response.json()
+        print(execucao)
+
+        return dataHoraFimRobo
+
+    except requests.exceptions.RequestException as e:
+        print(f"Erro na requisição: {e}")
+
+        return nomeProcesso, categoria, numeroPoint,dataHoraFimPoint, dataHoraFimRobo ,statusPoint, statusExecucao, msgErro

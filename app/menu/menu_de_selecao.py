@@ -3,7 +3,7 @@ from time import sleep
 
 
 def menu_de_selecao():
-    from func.func_main import teste
+    from func.func_main import func_main
     app = QApplication([])  # Inicia o aplicativo
     window = QWidget()  # Cria uma janela básica
     layout = QVBoxLayout()  # Layout principal
@@ -81,6 +81,7 @@ def menu_de_selecao():
     
 
     confirm_bt.clicked.connect(capturar_valores)
+    exit_bt.clicked.connect(app.quit)
         
     # Configurações da janela
     window.setWindowTitle("Ministério do Desenvolvimento Social")

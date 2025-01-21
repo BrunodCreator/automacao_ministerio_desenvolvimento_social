@@ -10,7 +10,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 
 
-def teste(nome_da_planilha,mes_elemento_selecionado,ano_elemento_selecionado,primeira_execucao):
+def func_main(nome_da_planilha,mes_elemento_selecionado,ano_elemento_selecionado,primeira_execucao):
     
     # Configuração do WebDriver
     service = Service(ChromeDriverManager().install())

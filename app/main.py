@@ -9,11 +9,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
-from func.func_main import teste
+from func.func_main import func_main
 from logs import func_logs_api
 
 Cliente = 'RPA_IEL'
-nome_processo = 'HAHAHAHAHAHHAHAHAHAHHAHAHAHHAHAAHHAHAHAHAHAHAHAHHAHAHAHAHAHAHHAAHAHA'
+nome_processo = 'Criando UUID da Execução'
 nome_robo = 'ESTRELINHA'
 data_hora_inicio_robo = None
 data_hora_fim_robo = None
@@ -21,7 +21,7 @@ categoria = 'INFO'
 numero_point = 0
 data_hora_inicio_point = None
 data_hora_fim_point = None
-status_point = 'AHAHHAAAAAAAAAAHAHAHHAHAHAHHAAHHAHAHAHAHHA'
+status_point = 'Concluido'
 status_execucao = 'EM_ANDAMENTO'
 msg_erro = ''
 execucao = ''
@@ -29,7 +29,7 @@ execucao = ''
 
 
 # Chamada da primeira execução
-func_logs_api.primeira_execucao(
+execucao = func_logs_api.primeira_execucao(
     cliente=Cliente,
     nomeProcesso= nome_processo,
     nomeRobo= nome_robo,
@@ -45,10 +45,42 @@ func_logs_api.primeira_execucao(
     
 )
 
+print('UUID: ', execucao)
 
 
+data_hora_inicio_point = func_logs_api.exec_inicio_point(
+    cliente=Cliente,
+    nomeProcesso= 'abrindo_menu_teste',
+    nomeRobo= nome_robo,
+    dataHoraInicioRobo=data_hora_inicio_robo,
+    numeroPoint=1,
+    categoria=categoria,
+    statusExecucao=status_execucao,
+    msgErro=msg_erro,
+    statusPoint=status_point,
+    execucao=execucao
+)
+
+print('UUID 2: ', execucao)
 #captura os valores do menu
 valores_menu = menu_de_selecao()
+
+data_hora_fim_point= func_logs_api.exec_fim_point(
+    cliente=Cliente,
+    nomeProcesso= 'fechano_menu_teste',
+    nomeRobo= nome_robo,
+    dataHoraInicioRobo=data_hora_inicio_robo,
+    dataHoraInicioPoint=data_hora_inicio_point,
+    dataHoraFimPoint=data_hora_fim_point,
+    numeroPoint=1,
+    categoria=categoria,
+    statusExecucao=status_execucao,
+    msgErro=msg_erro,
+    statusPoint=status_point,
+    execucao=execucao
+)
+
+print('UUID 3: ', execucao)
 
 #extrai os valores retornados
 nome_da_planilha = valores_menu['nome_da_planilha']
@@ -57,5 +89,21 @@ ano_elemento_selecionado = valores_menu['ano']
 primeira_execucao = valores_menu['primeira_execucao']
 
 
-teste(nome_da_planilha, converter_mes(mes_elemento_selecionado), ano_elemento_selecionado,primeira_execucao)
+func_main(nome_da_planilha, converter_mes(mes_elemento_selecionado), ano_elemento_selecionado,primeira_execucao)
 
+data_hora_fim_robo = func_logs_api.exec_fim_robo(
+    cliente=Cliente,
+    nomeProcesso= 'FIM_ROBO',
+    nomeRobo= nome_robo,
+    dataHoraInicioRobo=data_hora_inicio_robo,
+    dataHoraInicioPoint=data_hora_inicio_point,
+    dataHoraFimPoint=data_hora_fim_point,
+    dataHoraFimRobo=data_hora_fim_robo,
+    numeroPoint=2,
+    categoria=categoria,
+    statusExecucao=status_execucao,
+    msgErro=msg_erro,
+    statusPoint=status_point,
+    execucao=execucao
+)
+print('UUID 4: ', execucao)
