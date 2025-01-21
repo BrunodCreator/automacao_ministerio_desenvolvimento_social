@@ -11,7 +11,7 @@ def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
 
         headers = {
         "Content-Type": "application/json",
-        "Authorization": ""
+        "Authorization": "6f2c9478-453d-47db-90de-1538dc6f7203"
         }
         
         if not dataHoraInicioRobo:
@@ -42,7 +42,7 @@ def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
         execucao = response.json()
         print(execucao)
         
-        return execucao
+        return  dataHoraInicioRobo,dataHoraInicioPoint,dataHoraFimPoint, execucao
     
     except requests.exceptions.RequestException as e:
         print(f"Erro na requisição: {e}")
@@ -57,8 +57,8 @@ def exec_inicio_point(cliente,nomeProcesso='',
         url = ''
 
         headers = {
-            "Authorization": "",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "6f2c9478-453d-47db-90de-1538dc6f7203"
         }
         
         dataHoraInicioPoint = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -82,11 +82,12 @@ def exec_inicio_point(cliente,nomeProcesso='',
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()
 
-        return  execucao
+        return  dataHoraInicioPoint
 
     except requests.exceptions.RequestException as e:
         print(f"Erro na requisição: {e}")
-        return  execucao
+        
+        return  dataHoraInicioPoint
     
 
 def exec_fim_point(cliente, nomeProcesso,
@@ -98,7 +99,7 @@ def exec_fim_point(cliente, nomeProcesso,
 
         headers = {
         "Content-Type": "application/json",
-        "Authorization": ""
+        "Authorization": "6f2c9478-453d-47db-90de-1538dc6f7203"
         }
 
         if not dataHoraFimPoint:
@@ -122,15 +123,16 @@ def exec_fim_point(cliente, nomeProcesso,
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()  
 
-        execucao = response.json()
-        print(execucao)
+        #execucao = response.json()
 
         return dataHoraFimPoint
 
     except requests.exceptions.RequestException as e:
         print(f"Erro na requisição: {e}")
 
-        return nomeProcesso, categoria, numeroPoint,dataHoraFimPoint, statusPoint, statusExecucao, msgErro,
+        return dataHoraFimPoint
+    
+    
     
 def exec_fim_robo(cliente, nomeProcesso,
     nomeRobo, dataHoraInicioRobo, categoria,
@@ -141,7 +143,7 @@ def exec_fim_robo(cliente, nomeProcesso,
 
         headers = {
         "Content-Type": "application/json",
-        "Authorization": ""
+        "Authorization": "6f2c9478-453d-47db-90de-1538dc6f7203"
         }
         if not dataHoraFimRobo:
             dataHoraFimRobo = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -164,7 +166,7 @@ def exec_fim_robo(cliente, nomeProcesso,
         response = requests.post(url, headers=headers, json=payload)
         response.raise_for_status()  # Levanta exceções para códigos de erro HTTP
 
-        execucao = response.json()
+        #execucao = response.json()
         print(execucao)
 
         return dataHoraFimRobo
@@ -172,4 +174,4 @@ def exec_fim_robo(cliente, nomeProcesso,
     except requests.exceptions.RequestException as e:
         print(f"Erro na requisição: {e}")
 
-        return nomeProcesso, categoria, numeroPoint,dataHoraFimPoint, dataHoraFimRobo ,statusPoint, statusExecucao, msgErro
+        return dataHoraFimRobo
