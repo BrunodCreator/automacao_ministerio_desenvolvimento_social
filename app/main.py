@@ -10,9 +10,41 @@ from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 from func.func_main import teste
+from logs import func_logs_api
+
+Cliente = 'RPA_IEL'
+nome_processo = 'HAHAHAHAHAHHAHAHAHAHHAHAHAHHAHAAHHAHAHAHAHAHAHAHHAHAHAHAHAHAHHAAHAHA'
+nome_robo = 'ESTRELINHA'
+data_hora_inicio_robo = None
+data_hora_fim_robo = None
+categoria = 'INFO'
+numero_point = 0
+data_hora_inicio_point = None
+data_hora_fim_point = None
+status_point = 'AHAHHAAAAAAAAAAHAHAHHAHAHAHHAAHHAHAHAHAHHA'
+status_execucao = 'EM_ANDAMENTO'
+msg_erro = ''
+execucao = ''
 
 
-global primeira_execucao
+
+# Chamada da primeira execução
+func_logs_api.primeira_execucao(
+    cliente=Cliente,
+    nomeProcesso= nome_processo,
+    nomeRobo= nome_robo,
+    dataHoraInicioRobo=data_hora_inicio_robo,
+    categoria=categoria,
+    numeroPoint=numero_point,
+    dataHoraInicioPoint=data_hora_inicio_point,
+    dataHoraFimPoint=data_hora_fim_point,
+    statusPoint=status_point,
+    statusExecucao=status_execucao,
+    msgErro=msg_erro,
+    execucao=execucao
+    
+)
+
 
 
 #captura os valores do menu
