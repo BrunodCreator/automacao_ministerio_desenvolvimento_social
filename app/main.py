@@ -11,6 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from time import sleep
 from func.func_main import func_main
 from logs import func_logs_api
+from datetime import datetime
 
 m_cliente = 'RPA_IEL'
 nome_processo = 'Criando UUID da Execução'
@@ -29,7 +30,7 @@ m_execucao = ''
 
 
 # Chamada da primeira execução
-dataHoraInicioRobo,dataHoraInicioPoint,dataHoraFimPoint, m_execucao = func_logs_api.primeira_execucao(
+data_hora_inicio_robo,data_hora_inicio_point,data_hora_fim_point, m_execucao = func_logs_api.primeira_execucao(
     cliente=m_cliente,
     nomeProcesso= nome_processo,
     nomeRobo= nome_robo,
@@ -48,31 +49,20 @@ dataHoraInicioRobo,dataHoraInicioPoint,dataHoraFimPoint, m_execucao = func_logs_
 print('UUID: ', m_execucao)
 
 
-data_hora_inicio_point = func_logs_api.exec_inicio_point(
-    cliente=m_cliente,
-    nomeProcesso= 'abrindo_menu_teste',
-    nomeRobo= nome_robo,
-    dataHoraInicioRobo=data_hora_inicio_robo,
-    numeroPoint=1,
-    categoria=categoria,
-    statusExecucao=status_execucao,
-    msgErro=msg_erro,
-    statusPoint=status_point,
-    execucao=m_execucao
-)
+data_hora_inicio_point = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-print('UUID 2: ', m_execucao)
+# print('UUID 2: ', m_execucao)
 
 #captura os valores do menu
 valores_menu = menu_de_selecao()
 
 data_hora_fim_point= func_logs_api.exec_fim_point(
     cliente=m_cliente,
-    nomeProcesso= 'fechano_menu_teste',
+    nomeProcesso= 'fechano_menu_teste_NOVIDADE3',
     nomeRobo= nome_robo,
     dataHoraInicioRobo=data_hora_inicio_robo,
     dataHoraInicioPoint=data_hora_inicio_point,
-    dataHoraFimPoint=data_hora_fim_point,
+    dataHoraFimPoint=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
     numeroPoint=1,
     categoria=categoria,
     statusExecucao=status_execucao,
@@ -80,7 +70,7 @@ data_hora_fim_point= func_logs_api.exec_fim_point(
     statusPoint=status_point,
     execucao=m_execucao
 )
-
+print(f'{data_hora_inicio_point} {data_hora_fim_point}')
 print('UUID 3: ', m_execucao)
 
 #extrai os valores retornados do menu de seleção
@@ -94,17 +84,19 @@ func_main(nome_da_planilha, converter_mes(mes_elemento_selecionado), ano_element
 
 data_hora_fim_robo = func_logs_api.exec_fim_robo(
     cliente=m_cliente,
-    nomeProcesso= 'FIM_ROBO',
+    nomeProcesso= 'FIM_ROBO_NOVIDADE3',
     nomeRobo= nome_robo,
-    dataHoraInicioRobodata_hora_inicio_robo,
+    dataHoraInicioRobo=data_hora_inicio_robo,
     dataHoraInicioPoint=data_hora_inicio_point,
     dataHoraFimPoint=data_hora_fim_point,
-    dataHoraFimRobo=data_hora_fim_robo,
+    dataHoraFimRobo=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
     numeroPoint=2,
     categoria=categoria,
-    statusExecucao=status_execucao,
+    statusExecucao='SUCESSO',
     msgErro=msg_erro,
-    statusPoint=status_point,
-    execucao=execucao
+    statusPoint='Sucesso',
+    execucao=m_execucao
 )
-print('UUID 4: ', execucao)
+
+print(data_hora_fim_robo)
+print('UUID 4: ', m_execucao)

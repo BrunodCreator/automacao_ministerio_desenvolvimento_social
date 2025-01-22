@@ -2,12 +2,12 @@ import requests
 from datetime import datetime
 
 
-def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
+def primeira_execucao(cliente="", nomeProcesso="",
                       nomeRobo="", dataHoraInicioRobo=None, categoria="INFO",
-                      numeroPoint=0, dataHoraInicioPoint=None, dataHoraFimPoint=None,
-                      statusPoint="Sucesso", statusExecucao="SUCESSO", msgErro="", execucao=""): 
+                      numeroPoint=None, dataHoraInicioPoint=None, dataHoraFimPoint=None,
+                      statusPoint="", statusExecucao='', msgErro='', execucao=''): 
     try:
-        url = ''
+        url = 'https://teste.sitedoestagio.com.br/rpalogs/registrar'
 
         headers = {
         "Content-Type": "application/json",
@@ -48,13 +48,15 @@ def primeira_execucao(cliente="", nomeProcesso="Criando UUID da Execução",
         print(f"Erro na requisição: {e}")
         
         return dataHoraInicioRobo, None
+  
+  
         
 def exec_inicio_point(cliente,nomeProcesso='',
     nomeRobo='', dataHoraInicioRobo='', categoria='',
     numeroPoint='', dataHoraInicioPoint='',
     statusPoint='', statusExecucao='', msgErro='', execucao=''):
     try:
-        url = ''
+        url = 'https://teste.sitedoestagio.com.br/rpalogs/registrar'
 
         headers = {
             "Content-Type": "application/json",
@@ -79,8 +81,8 @@ def exec_inicio_point(cliente,nomeProcesso='',
             "execucao": f"{execucao}"
         }
 
-        response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()
+        # response = requests.post(url, headers=headers, json=payload)
+        # response.raise_for_status()
 
         return  dataHoraInicioPoint
 
@@ -90,12 +92,13 @@ def exec_inicio_point(cliente,nomeProcesso='',
         return  dataHoraInicioPoint
     
 
+
 def exec_fim_point(cliente, nomeProcesso,
     nomeRobo, dataHoraInicioRobo, categoria,
     numeroPoint, dataHoraInicioPoint, dataHoraFimPoint,
     statusPoint, statusExecucao, msgErro, execucao): 
     try:
-        url = ''
+        url = 'https://teste.sitedoestagio.com.br/rpalogs/registrar'
 
         headers = {
         "Content-Type": "application/json",
@@ -110,7 +113,7 @@ def exec_fim_point(cliente, nomeProcesso,
         "nomeProcesso": f"{nomeProcesso}",
         "nomeRobo": f"{nomeRobo}",
         "dataHoraInicioRobo": f"{dataHoraInicioRobo}",
-        "daraHoraFimRobo": "",
+        "dataHoraFimRobo": "",
         "categoria": f"{categoria}",
         "numeroPoint": f"{numeroPoint}",
         "dataHoraInicioPoint": f"{dataHoraInicioPoint}",
@@ -135,11 +138,11 @@ def exec_fim_point(cliente, nomeProcesso,
     
     
 def exec_fim_robo(cliente, nomeProcesso,
-    nomeRobo, dataHoraInicioRobo, categoria,
-    numeroPoint, dataHoraInicioPoint, dataHoraFimPoint,dataHoraFimRobo,
+    nomeRobo, dataHoraInicioRobo,dataHoraFimRobo, categoria,
+    numeroPoint, dataHoraInicioPoint, dataHoraFimPoint,
     statusPoint, statusExecucao, msgErro, execucao): 
     try:
-        url = ''
+        url = 'https://teste.sitedoestagio.com.br/rpalogs/registrar'
 
         headers = {
         "Content-Type": "application/json",
@@ -153,11 +156,11 @@ def exec_fim_robo(cliente, nomeProcesso,
         "nomeProcesso": f"{nomeProcesso}",
         "nomeRobo": f"{nomeRobo}",
         "dataHoraInicioRobo": f"{dataHoraInicioRobo}",
-        "daraHoraFimRobo": "",
+        "daraHoraFimRobo": f"2025-01-22 15:54:19",
         "categoria": f"{categoria}",
         "numeroPoint": f"{numeroPoint}",
-        "dataHoraInicioPoint": f"{dataHoraInicioPoint}",
-        "dataHoraFimPoint": f"{dataHoraFimPoint}",
+        "dataHoraInicioPoint": "2025-01-22 15:54:19",
+        "dataHoraFimPoint": "2025-01-22 15:54:19",
         "statusPoint": f"{statusPoint}",
         "statusExecucao": f"{statusExecucao}",
         "msgErro": f"{msgErro}",
